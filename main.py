@@ -76,18 +76,17 @@ def register():
 
         if not error:
             email = request.form['email']
+            session['email'] = email
+            new_user = User(email, password)
+            db.session.add(new_user)
+            db.session.commit()
             return render_template('blogs.html', email=email)
             
         else:
             return render_template('register.html', email=email, password='', verify='',  error = error)
 
-
         existing_user = User.query.filter_by(email=email).first()
-        if not existing_user:
-            new_user = User(email, password)
-            db.session.add(new_user)
-            db.session.commit()
-            session['email'] = email
+        if not existing_user:            
             return redirect('/blogs')
         else:
             return "<h1>User already exists.</h1>"

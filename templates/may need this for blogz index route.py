@@ -5,3 +5,5 @@ def require_login():
         return redirect('/login')
     else:
         return redirect('/blogs')
+
+    
