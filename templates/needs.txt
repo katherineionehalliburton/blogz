@@ -1,4 +1,5 @@
 fix duplicate user error
+fix validation - not running - a return is not correct
 User visits the /blog page and sees a list of all blog entries by all users
 make home page
 make dynamic user list

@@ -54,25 +54,31 @@ def register():
         email = request.form['email']
         password = request.form['password']
         verify = request.form['verify']
-
-        error = ''
+        existing_user = User.query.filter_by(email=email).first()
+        password_error = ''
+        email_error = ''
+        verify_error = ''
+        existing_user_error = ''
         
 
         if len(email) < 3 or len(email) > 20 or " " in email or email == "":
-            error = "Your entry must be between 3 and 20 characters and contain no spaces. Required field."
+            email_error = "Your entry must be between 3 and 20 characters and contain no spaces. Required field."
         if len(password) < 3 or len(password) > 20 or " " in password or password == "":
-            error = "Your entry must be between 3 and 20 characters and contain no spaces. Required field."
+            password_error = "Your entry must be between 3 and 20 characters and contain no spaces. Required field."
         if len(verify) < 3 or len(verify) > 20 or " " in verify or verify == "":
-            error = "Your entry must be between 3 and 20 characters and contain no spaces. Required field."
+            verify_error = "Your entry must be between 3 and 20 characters and contain no spaces. Required field."
             
         if email:
             if "." not in email and "@" not in email:
-                error = "Please check and re-submit. Please do not use spaces."
+                email_error = "Please check and re-submit. Please do not use spaces."
 
         if password != verify:
-            error = "Password and Verify Password fields must match."
+            password_error = "Password and Verify Password fields must match."
 
-        if not error:
+        if existing_user:            
+            existing_user_error = "User already exists."
+
+        if not email_error and not password_error and not existing_user_error:
             session['email'] = email
             new_user = User(email, password)
             db.session.add(new_user)
@@ -80,13 +86,7 @@ def register():
             return render_template('blogs.html', email=email)
             
         else:
-            return render_template('register.html', email=email, password='', verify='',  error = error)
-
-        existing_user = User.query.filter_by(email=email).first()
-        if not existing_user:            
-            return redirect('/blogs')
-        else:
-            return "<h1>User already exists.</h1>"
+            return render_template('register.html', email=email, email_error=email_error, password='', password_error=password_error, verify='', verify_error=verify_error, existing_user_error=existing_user_error)
 
     return render_template('register.html')
 
