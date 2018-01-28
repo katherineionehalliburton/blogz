@@ -32,8 +32,6 @@ class User(db.Model):
         self.password = password
 
 
-
-
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
@@ -43,7 +41,7 @@ def login():
         if user and user.password == password:
             session['email'] = email
             flash("Logged in")
-            return redirect('/blogs?id={0}'.format(blog.id))
+            return redirect('/newpost')
         else:
             flash('User/password incorrect or user does not exist', 'error')
 
@@ -75,7 +73,6 @@ def register():
             error = "Password and Verify Password fields must match."
 
         if not error:
-            email = request.form['email']
             session['email'] = email
             new_user = User(email, password)
             db.session.add(new_user)
@@ -98,19 +95,14 @@ def logout():
     del session['email']
     return redirect('/login')
 
-@app.route('/blogs', methods=['POST', 'GET'])
+@app.route('/blogs')
 def index():   
     owner = User.query.filter_by(email=session['email']).first()
     blogid = request.args.get('id')
-    if request.method == 'POST':
-        blog = request.form['name', 'body']
-        new_blog = Blog(blog, owner)
-        db.session.add(new_blog)
-        db.session.commit()
-        if blogid:
-            blogid = int(blogid)
-            blogs = Blog.query.get(blogid)
-            return render_template('ind_post.html', blogs=blogs)
+    if blogid:
+        blogid = int(blogid)
+        blogs = Blog.query.get(blogid)
+        return render_template('ind_post.html', blogs=blogs)
 
     blogs = Blog.query.filter_by(owner=owner).all()
     return render_template('blogs.html',title="My Blogs", 

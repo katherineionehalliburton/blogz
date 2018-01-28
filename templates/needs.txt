@@ -1,0 +1,5 @@
+fix duplicate user error
+User visits the /blog page and sees a list of all blog entries by all users
+make home page
+make dynamic user list
+require login
