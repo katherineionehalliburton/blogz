@@ -31,6 +31,12 @@ class User(db.Model):
         self.email = email
         self.password = password
 
+@app.before_request
+def require_login():
+    allowed_routes = ['login', 'register',]
+    if request.endpoint not in allowed_routes and 'email' not in session:
+        flash("You must log in!")
+        return redirect('/login')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
