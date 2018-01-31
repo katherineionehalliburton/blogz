@@ -33,7 +33,7 @@ class User(db.Model):
 
 @app.before_request
 def require_login():
-    allowed_routes = ['login', 'register',]
+    allowed_routes = ['login', 'register','index', 'blogs']
     if request.endpoint not in allowed_routes and 'email' not in session:
         flash("You must log in!")
         return redirect('/login')
@@ -85,10 +85,10 @@ def register():
             existing_user_error = "User already exists."
 
         if not email_error and not password_error and not existing_user_error:
-            session['email'] = email
             new_user = User(email, password)
             db.session.add(new_user)
             db.session.commit()
+            session['email'] = email
             return render_template('blogs.html', email=email)
             
         else:
@@ -100,6 +100,12 @@ def register():
 def logout():
     del session['email']
     return redirect('/login')
+
+@app.route('/')
+def index():
+    users = User.query.all()
+    return render_template('index.html',title="All Users", 
+        users=users)
 
 @app.route('/blogs')
 def blogs():   

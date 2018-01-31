@@ -1,13 +1,4 @@
 fix validation - not running - a return is not correct
 
 
-User visits the /blog page and sees a list of all blog entries by all users (this was working in the getitdone project - when a blog was added it would mix together with the other users blogs - find out how to get the code back to that)
-
-
-make handler for index page (done?)
-
-
-make dynamic user list (issues, two possible options - one in /index and one in /may need this...)
-
-
-require login for blogs and index pages, works for login and register pages 
+blogs page KeyError 'email' - line 114? (only happens when NOT logged in)  and User should visit the /blog page and see a list of all blog entries by all users (this was working in the getitdone project - when a blog was added it would mix together with the other users blogs - find out how to get the code back to that) 
