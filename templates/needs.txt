@@ -1,4 +1,0 @@
-fix validation - not running - a return is not correct
-
-
-blogs page KeyError 'email' - line 114? (only happens when NOT logged in)  and User should visit the /blog page and see a list of all blog entries by all users (this was working in the getitdone project - when a blog was added it would mix together with the other users blogs - find out how to get the code back to that) 

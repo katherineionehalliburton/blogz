@@ -15,10 +15,9 @@
                 {% for blog in blogs %}
                 <li>
                     <a href="/blogs?id={{blog.id}}">{{blog.name}}</a>
-                    {{blog.body}}
+                    <p><h4>Written by:</h4><a href="/blog?id={{blog.owner.id}}"></a> {{blog.owner.email}}</p>
                 </li>
                 {% endfor %}
-            </ul>
 
         {% endif %}
 

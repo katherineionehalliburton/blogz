@@ -56,43 +56,45 @@ def login():
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
+    error = False
+    email = ''
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
         verify = request.form['verify']
-        existing_user = User.query.filter_by(email=email).first()
-        password_error = ''
-        email_error = ''
-        verify_error = ''
-        existing_user_error = ''
         
-
-        if len(email) < 3 or len(email) > 20 or " " in email or email == "":
-            email_error = "Your entry must be between 3 and 20 characters and contain no spaces. Required field."
-        if len(password) < 3 or len(password) > 20 or " " in password or password == "":
-            password_error = "Your entry must be between 3 and 20 characters and contain no spaces. Required field."
-        if len(verify) < 3 or len(verify) > 20 or " " in verify or verify == "":
-            verify_error = "Your entry must be between 3 and 20 characters and contain no spaces. Required field."
-            
-        if email:
-            if "." not in email and "@" not in email:
-                email_error = "Please check and re-submit. Please do not use spaces."
-
-        if password != verify:
-            password_error = "Password and Verify Password fields must match."
-
+        existing_user = User.query.filter_by(email=email).first()
+        
         if existing_user:            
-            existing_user_error = "User already exists."
-
-        if not email_error and not password_error and not existing_user_error:
-            new_user = User(email, password)
-            db.session.add(new_user)
-            db.session.commit()
-            session['email'] = email
-            return render_template('blogs.html', email=email)
+            flash("User already exists")
+        if not existing_user:
+            if len(email) < 3 or len(email) > 20 or " " in email or email == "":
+                error = True
+                flash("Your entry must be between 3 and 20 characters and contain no spaces. Required field.")
+            if len(password) < 3 or len(password) > 20 or " " in password or password == "":
+                error = True
+                flash("Your entry must be between 3 and 20 characters and contain no spaces. Required field.")
+            if len(verify) < 3 or len(verify) > 20 or " " in verify or verify == "":
+                error = True
+                flash("Your entry must be between 3 and 20 characters and contain no spaces. Required field.")
             
-        else:
-            return render_template('register.html', email=email, email_error=email_error, password='', password_error=password_error, verify='', verify_error=verify_error, existing_user_error=existing_user_error)
+    
+            if "." not in email and "@" not in email:
+                error = True
+                flash("Please check and re-submit. Please do not use spaces.")
+
+            if password != verify:
+                error = True
+                flash("Password and Verify Password fields must match.")
+
+            if not error:
+                new_user = User(email, password)
+                db.session.add(new_user)
+                db.session.commit()
+                session['email'] = email
+                return redirect('/blogs')
+                
+        return redirect('/register')
 
     return render_template('register.html')
 
@@ -109,15 +111,17 @@ def index():
 
 @app.route('/blogs')
 def blogs():   
-    owner = User.query.filter_by(email=session['email']).first()
     blogid = request.args.get('id')
+    ownerid = request.args.get('owner_id')
+    if ownerid:
+        blogs = Blog.query.filter_by(ownerid=ownerid).all()
+        return render_template('blogs.html', title="Blogs", blogs=blogs)
     if blogid:
         blogid = int(blogid)
         blogs = Blog.query.get(blogid)
         return render_template('ind_post.html', blogs=blogs)
-
-    blogs = Blog.query.filter_by(owner=owner).all()
-    return render_template('blogs.html',title="My Blogs", 
+    blogs = Blog.query.all()
+    return render_template('blogs.html',title="Blogs", 
         blogs=blogs)
 
 
