@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>All Users</h1>
+    <a href='/newpost'>Make New Post</a>
+    <a href='/blogs'>View All Blogs</a>
+
+    <hr />
+        <ul>
+            {% for blog in blogs %}
+            <li>
+                <a href="/blogs?id={{blog.id}}">{{user.email}}</a>
+            </li>
+            {% endfor %}
+        </ul>
+
+    <hr />
+{% endblock %}

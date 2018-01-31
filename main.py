@@ -102,7 +102,7 @@ def logout():
     return redirect('/login')
 
 @app.route('/blogs')
-def index():   
+def blogs():   
     owner = User.query.filter_by(email=session['email']).first()
     blogid = request.args.get('id')
     if blogid:
