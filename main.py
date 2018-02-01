@@ -79,9 +79,13 @@ def register():
                 flash("Your entry must be between 3 and 20 characters and contain no spaces. Required field.")
             
     
-            if "." not in email and "@" not in email:
+            if "." not in email: 
                 error = True
-                flash("Please check and re-submit. Please do not use spaces.")
+                flash("Not a valid email.")
+            
+            if "@" not in email:
+                error = True
+                flash("Not a valid email.")
 
             if password != verify:
                 error = True
